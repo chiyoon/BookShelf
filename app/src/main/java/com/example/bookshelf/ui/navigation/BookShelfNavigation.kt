@@ -1,11 +1,16 @@
 package com.example.bookshelf.ui.navigation
 
+import android.graphics.Paint.Align
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.BottomNavigation
@@ -14,6 +19,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -75,19 +81,24 @@ fun BookShelfNavigation(
                         restoreState = true
                     }
                 },
-                label = {
-                    Text(
-                        text = stringResource(id = navigationItem.title),
-                        color = Color.Black,
-                        fontSize = 16.sp
-                    )
-                },
                 icon = {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(id = navigationItem.icon),
-                        contentDescription = stringResource(id = navigationItem.title),
-                        modifier = Modifier.size(20.dp)
-                    )
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = navigationItem.icon),
+                            contentDescription = stringResource(id = navigationItem.title),
+                            modifier = Modifier.size(24.dp).offset(y = 4.dp),
+                            tint = Color.Black
+                        )
+                        Text(
+                            text = stringResource(id = navigationItem.title),
+                            color = Color.Black,
+                            fontSize = 16.sp,
+                            modifier = Modifier.offset(y = 4.dp)
+                        )
+                    }
                 })
         }
     }
