@@ -1,15 +1,10 @@
 package com.example.bookshelf.ui.navigation
 
-import android.graphics.Paint.Align
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -34,6 +29,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.bookshelf.ui.screen.NewScreen
 import com.example.bookshelf.ui.screen.SearchScreen
+import com.example.bookshelf.ui.theme.Purple40
 import com.example.composetest.NavigationItem
 
 @Composable
@@ -68,11 +64,15 @@ fun BookShelfNavigation(
             .height(64.dp)
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
+        val selectedColor = Purple40
         val currentDestination = navBackStackEntry?.destination
 
         items.forEach { navigationItem ->
+            val isSelected = currentDestination?.hierarchy?.any { it.route == navigationItem.route } == true
+            val itemColor = if (isSelected) selectedColor else Color.Black
+
             BottomNavigationItem(
-                selected = currentDestination?.hierarchy?.any { it.route == navigationItem.route } == true,
+                selected = isSelected,
                 onClick = {
                     navController.navigate(navigationItem.route) {
                         popUpTo(navController.graph.startDestinationId) {
@@ -94,16 +94,18 @@ fun BookShelfNavigation(
                             modifier = Modifier
                                 .size(24.dp)
                                 .offset(y = 4.dp),
-                            tint = Color.Black
+                            tint = itemColor
                         )
                         Text(
                             text = stringResource(id = navigationItem.title),
-                            color = Color.Black,
+                            color = itemColor,
                             fontSize = 16.sp,
                             modifier = Modifier.offset(y = 4.dp)
                         )
                     }
-                })
+                },
+                selectedContentColor = selectedColor,
+            )
         }
     }
 }
