@@ -19,18 +19,36 @@ val nanumSquareRound = FontFamily(
 )
 
 val Typography = Typography(
-    bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
-    ),
     titleLarge = TextStyle(
         fontFamily = nanumSquareRound,
         fontWeight = FontWeight.ExtraBold,
         fontSize = 24.sp
-    )
+    ),
+    titleMedium = TextStyle(
+        fontFamily = nanumSquareRound,
+        fontWeight = FontWeight.ExtraBold,
+        fontSize = 20.sp
+    ),
+    titleSmall = TextStyle(
+        fontFamily = nanumSquareRound,
+        fontWeight = FontWeight.Bold,
+        fontSize = 18.sp
+    ),
+    bodyLarge = TextStyle(
+        fontFamily = nanumSquareRound,
+        fontWeight = FontWeight.Bold,
+        fontSize = 16.sp
+    ),
+    bodyMedium = TextStyle(
+        fontFamily = nanumSquareRound,
+        fontWeight = FontWeight.Bold,
+        fontSize = 14.sp
+    ),
+    bodySmall = TextStyle(
+        fontFamily = nanumSquareRound,
+        fontWeight = FontWeight.Normal,
+        fontSize = 12.sp
+    ),
     /* Other default text styles to override
     titleLarge = TextStyle(
         fontFamily = FontFamily.Default,
