@@ -32,6 +32,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.bookshelf.ui.screen.NewScreen
+import com.example.bookshelf.ui.screen.SearchScreen
 import com.example.composetest.NavigationItem
 
 @Composable
@@ -46,10 +48,10 @@ fun BookShelfNavigationConfigurations(
             .padding(innerPadding)
     ) {
         composable(NavigationItem.New.route) {
-            // TODO : navigate
+            NewScreen()
         }
         composable(NavigationItem.Search.route) {
-            // TODO : navigate
+            SearchScreen()
         }
     }
 }
@@ -73,7 +75,7 @@ fun BookShelfNavigation(
                 selected = currentDestination?.hierarchy?.any { it.route == navigationItem.route } == true,
                 onClick = {
                     navController.navigate(navigationItem.route) {
-                        popUpTo(navigationItem.route) {
+                        popUpTo(navController.graph.startDestinationId) {
                             saveState = true
                         }
 
@@ -89,7 +91,9 @@ fun BookShelfNavigation(
                         Icon(
                             imageVector = ImageVector.vectorResource(id = navigationItem.icon),
                             contentDescription = stringResource(id = navigationItem.title),
-                            modifier = Modifier.size(24.dp).offset(y = 4.dp),
+                            modifier = Modifier
+                                .size(24.dp)
+                                .offset(y = 4.dp),
                             tint = Color.Black
                         )
                         Text(
