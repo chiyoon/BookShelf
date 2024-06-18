@@ -18,17 +18,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat.startActivity
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.bookshelf.ui.Model.Book
 import com.example.bookshelf.ui.theme.Typography
 
 @Composable
-fun BookCard() {
+fun BookCard(book: Book) {
     val context = LocalContext.current
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
         AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data("https://itbook.store/img/books/9781912047451.png")
+            model = ImageRequest.Builder(context)
+                .data(book.image)
                 .crossfade(true)
                 .build(),
             contentDescription = null,
@@ -36,20 +37,22 @@ fun BookCard() {
             modifier = Modifier.fillMaxWidth()
         )
         Text(
-            text = "An Introduction to C & GUI Programming, 2nd Edition",
+            text = book.title,
             style = Typography.titleSmall
         )
+        if (book.subtitle.isNotEmpty()) {
+            Text(
+                text = (book.subtitle),
+                style = Typography.bodyMedium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
         Text(
-            text = "Architecting, Designing, and Deploying on the Snowflake Data Cloud",
-            style = Typography.bodyMedium,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
-        Text(
-            text = "$65.00", style = Typography.bodyMedium
+            text = book.price, style = Typography.bodyMedium
         )
         val annotatedUrl = buildAnnotatedString {
-            val text = "https://itbook.store/books/9781912047451"
+            val text = "Web link"
             val startIndex = 0
             val endIndex = startIndex + text.length
 
@@ -65,7 +68,7 @@ fun BookCard() {
 
             addStringAnnotation(
                 tag = "URL",
-                annotation = text,
+                annotation = book.url,
                 start = startIndex,
                 end = endIndex
             )
@@ -74,20 +77,27 @@ fun BookCard() {
             text = annotatedUrl,
             style = Typography.bodySmall,
             onClick = { _ ->
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(annotatedUrl.text))
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(book.url))
 
                 startActivity(context, intent, null)
             }
         )
-        Text(
-            text = "9781912047451",
-            style = Typography.bodySmall
-        )
+//        Text(
+//            text = book.isbn13,
+//            style = Typography.bodySmall
+//        )
     }
 }
 
 @Composable
 @Preview
 fun BookCardPreview() {
-    BookCard()
+    BookCard(book = Book(
+        "An Introduction to C & GUI Programming, 2nd Edition",
+        "Architecting, Designing, and Deploying on the Snowflake Data Cloud",
+        "9781098103828",
+        "$58.90",
+        "https://itbook.store/img/books/9781098103828.png",
+        "https://itbook.store/books/9781098103828"
+    ))
 }

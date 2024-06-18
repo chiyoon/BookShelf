@@ -10,14 +10,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.bookshelf.ui.Model.Book
 import com.example.bookshelf.ui.component.BookCard
 import com.example.bookshelf.ui.component.TopBar
-import kotlin.random.Random
 
 @Composable
 fun NewScreen() {
     val list = (1..100).map {
-        Random.nextFloat().toString()
+        Book(
+            "An Introduction to C & GUI Programming, 2nd Edition",
+            "Architecting, Designing, and Deploying on the Snowflake Data Cloud",
+            "9781098103828",
+            "$58.90",
+            "https://itbook.store/img/books/9781098103828.png",
+            "https://itbook.store/books/9781098103828"
+        )
     }
 
     Scaffold(
@@ -31,7 +38,7 @@ fun NewScreen() {
             contentPadding = PaddingValues(8.dp)
         ) {
             items(list.size) { index ->
-                BookCard()
+                BookCard(list[index])
             }
         }
     }
