@@ -75,4 +75,11 @@ dependencies {
     // Async Image Load
     implementation(libs.coil.kt.coil)
     implementation(libs.coil.kt.coil.compose)
+
+    // DI
+    implementation(libs.androidx.hilt.navigation.compose)
+
+    // Rest API
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
 }
