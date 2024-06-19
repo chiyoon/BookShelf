@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.bookshelf.ui.Model.Book
 import com.example.bookshelf.ui.component.BookCard
 import com.example.bookshelf.ui.component.TopBar
 import com.example.bookshelf.ui.viewmodel.NewScreenViewModel
@@ -23,7 +24,7 @@ fun NewScreen(
 ) {
     viewModel.getRes()
 
-    val list by viewModel.newBookList.collectAsState(initial = emptyList())
+    val list by viewModel.newBookList.collectAsState(initial = List(10) { Book.placeholder })
 
     Scaffold(
         topBar = { TopBar(content = "What's New?") }

@@ -9,7 +9,15 @@ data class Book(
     val price: String,
     val image: String,
     val url: String
-)
+) {
+
+    companion object {
+
+        val placeholder = Book("", "", "", "", "", "")
+
+    }
+
+}
 
 private fun GetNewResponseEntity.Book.toBook() = Book(
     this.title, this.subtitle, this.isbn13, this.price, this.image, this.url
