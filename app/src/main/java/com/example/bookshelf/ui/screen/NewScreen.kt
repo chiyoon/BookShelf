@@ -1,5 +1,6 @@
 package com.example.bookshelf.ui.screen
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -13,6 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.bookshelf.ui.Model.Book
 import com.example.bookshelf.ui.component.BookCard
 import com.example.bookshelf.ui.component.TopBar
@@ -20,6 +23,7 @@ import com.example.bookshelf.ui.viewmodel.NewScreenViewModel
 
 @Composable
 fun NewScreen(
+    navController: NavHostController,
     viewModel: NewScreenViewModel = hiltViewModel()
 ) {
     viewModel.getRes()
@@ -37,7 +41,9 @@ fun NewScreen(
             contentPadding = PaddingValues(8.dp)
         ) {
             items(list.size) { index ->
-                BookCard(list[index])
+                BookCard(list[index], modifier = Modifier.clickable {
+                    navController.navigate("detail/" + list[index].isbn13)
+                })
             }
         }
     }
@@ -46,5 +52,6 @@ fun NewScreen(
 @Composable
 @Preview
 fun NewScreenPreview() {
-    NewScreen()
+    val navController = rememberNavController()
+    NewScreen(navController)
 }

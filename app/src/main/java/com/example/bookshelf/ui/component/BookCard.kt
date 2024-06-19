@@ -27,10 +27,11 @@ import com.example.bookshelf.ui.Model.Book
 import com.example.bookshelf.ui.theme.Typography
 
 @Composable
-fun BookCard(book: Book) {
+fun BookCard(book: Book, modifier: Modifier = Modifier) {
     val context = LocalContext.current
+
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
     ) {
         AsyncImage(
             model = ImageRequest.Builder(context)
