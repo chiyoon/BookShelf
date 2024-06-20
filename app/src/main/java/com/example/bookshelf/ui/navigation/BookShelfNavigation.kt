@@ -1,9 +1,5 @@
 package com.example.bookshelf.ui.navigation
 
-import android.widget.Toast
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -54,7 +50,7 @@ fun BookShelfNavigationConfigurations(
             NewScreen(navController)
         }
         composable(NavigationItem.Search.route) {
-            SearchScreen()
+            SearchScreen(navController)
         }
         composable(
             NavigationItem.Detail.route,
