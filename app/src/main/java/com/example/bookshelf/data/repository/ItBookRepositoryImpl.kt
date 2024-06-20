@@ -7,11 +7,14 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.bookshelf.data.datasource.ItBookDataSource
 import com.example.bookshelf.data.dto.ApiException
+import com.example.bookshelf.domain.entity.GetBooksRequestEntity
+import com.example.bookshelf.domain.entity.GetBooksResponseEntity
 import com.example.bookshelf.domain.entity.GetNewResponseEntity
 import com.example.bookshelf.domain.entity.GetSearchRequestEntity
 import com.example.bookshelf.domain.entity.GetSearchResponseEntity
 import com.example.bookshelf.domain.respository.ItBookRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
@@ -23,6 +26,14 @@ class ItBookRepositoryImpl @Inject constructor(
         return flow {
             itBookDataSource.getNew().collect { dto ->
                 emit(dto.mapCatching { it.toEntity() })
+            }
+        }
+    }
+
+    override fun getBooks(requestEntity: GetBooksRequestEntity): Flow<Result<GetBooksResponseEntity>> {
+        return flow {
+            itBookDataSource.getBooks(requestEntity.isbn13).collect { dto ->
+                emit(dto.mapCatching { it.toDTO() })
             }
         }
     }

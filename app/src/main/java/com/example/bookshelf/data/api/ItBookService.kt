@@ -1,5 +1,6 @@
 package com.example.bookshelf.data.api
 
+import com.example.bookshelf.data.dto.GetBooksResponseDTO
 import com.example.bookshelf.data.dto.GetNewResponseDTO
 import com.example.bookshelf.data.dto.GetSearchResponseDTO
 import retrofit2.http.GET
@@ -13,7 +14,7 @@ interface ItBookService {
     @GET("books/{isbn}")
     suspend fun getBooks(
         @Path("isbn") isbn: String
-    )
+    ): GetBooksResponseDTO
 
     @GET("search/{query}/{page}")
     suspend fun getSearch(
