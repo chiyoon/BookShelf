@@ -17,7 +17,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,6 +34,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.bookshelf.R
 import com.example.bookshelf.presentation.viewmodel.SearchViewModel
+import com.example.bookshelf.ui.component.BookRow
 import com.example.bookshelf.ui.component.TopBar
 import com.example.bookshelf.ui.theme.Typography
 
@@ -93,7 +93,11 @@ fun SearchScreen(
             }
             LazyColumn {
                 items(item.itemCount) { index ->
-                    item[index]?.let { book -> Text(text = book.title) }
+                    item[index]?.let { book ->
+                        BookRow(book = book, modifier = Modifier.clickable {
+                            navController.navigate("detail/" + book.isbn13)
+                        })
+                    }
                 }
             }
         }
