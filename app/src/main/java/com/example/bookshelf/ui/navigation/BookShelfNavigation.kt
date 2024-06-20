@@ -1,5 +1,9 @@
 package com.example.bookshelf.ui.navigation
 
+import android.widget.Toast
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -24,9 +28,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.navArgument
+import com.example.bookshelf.ui.screen.DetailScreen
 import com.example.bookshelf.ui.screen.NewScreen
 import com.example.bookshelf.ui.screen.SearchScreen
 import com.example.bookshelf.ui.theme.Purple40
@@ -44,10 +51,20 @@ fun BookShelfNavigationConfigurations(
             .padding(innerPadding)
     ) {
         composable(NavigationItem.New.route) {
-            NewScreen()
+            NewScreen(navController)
         }
         composable(NavigationItem.Search.route) {
             SearchScreen()
+        }
+        composable(
+            NavigationItem.Detail.route,
+            arguments = listOf(navArgument("isbn13") { type = NavType.StringType })
+        ) {
+            val isbn13 = it.arguments?.getString("isbn13")
+
+            if (isbn13 != null) {
+                DetailScreen(isbn13 = isbn13)
+            }
         }
     }
 }
@@ -68,7 +85,8 @@ fun BookShelfNavigation(
         val currentDestination = navBackStackEntry?.destination
 
         items.forEach { navigationItem ->
-            val isSelected = currentDestination?.hierarchy?.any { it.route == navigationItem.route } == true
+            val isSelected =
+                currentDestination?.hierarchy?.any { it.route == navigationItem.route } == true
             val itemColor = if (isSelected) selectedColor else Color.Black
 
             BottomNavigationItem(
