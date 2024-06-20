@@ -80,7 +80,7 @@ fun SearchScreen(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_search_black), // 화살표 아이콘 리소스를 여기에 추가하세요
+                    painter = painterResource(id = R.drawable.ic_search_black),
                     contentDescription = null,
                     tint = Color.Black,
                     modifier = Modifier
