@@ -80,8 +80,11 @@ dependencies {
 
     // DI
     implementation(libs.androidx.hilt.navigation.compose)
-    implementation("com.google.dagger:hilt-android:2.48")
-    kapt("com.google.dagger:hilt-android-compiler:2.48")
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
+
+    implementation(libs.androidx.paging.runtime)
+    implementation(libs.androidx.paging.compose)
 
     // Rest API
     implementation(libs.retrofit)

@@ -3,6 +3,7 @@ package com.example.bookshelf.data.datasource
 import com.example.bookshelf.data.api.ItBookClient
 import com.example.bookshelf.data.dto.ApiException
 import com.example.bookshelf.data.dto.GetNewResponseDTO
+import com.example.bookshelf.data.dto.GetSearchResponseDTO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
@@ -22,4 +23,12 @@ class ItBookDataSourceImpl @Inject constructor() : ItBookDataSource {
         }
     }
 
+    override suspend fun getSearch(query: String, page: Int): Result<GetSearchResponseDTO> =
+        try {
+            val res = ItBookClient.itBookService.getSearch(query, page)
+
+            Result.success(res)
+        } catch(e: HttpException) {
+            Result.failure(ApiException(e.code()))
+        }
 }
