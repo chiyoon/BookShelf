@@ -21,10 +21,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.bookshelf.R
-import com.example.bookshelf.ui.Model.Book
+import com.example.bookshelf.presentation.model.Book
 import com.example.bookshelf.ui.component.BookCard
 import com.example.bookshelf.ui.component.TopBar
-import com.example.bookshelf.ui.viewmodel.NewScreenViewModel
+import com.example.bookshelf.presentation.viewmodel.NewScreenViewModel
 
 @Composable
 fun NewScreen(

@@ -23,7 +23,7 @@ import androidx.core.content.ContextCompat.startActivity
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.bookshelf.R
-import com.example.bookshelf.ui.Model.Book
+import com.example.bookshelf.presentation.model.Book
 import com.example.bookshelf.ui.theme.Typography
 
 @Composable

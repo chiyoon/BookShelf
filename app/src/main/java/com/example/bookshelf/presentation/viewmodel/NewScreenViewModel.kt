@@ -1,12 +1,12 @@
-package com.example.bookshelf.ui.viewmodel
+package com.example.bookshelf.presentation.viewmodel
 
 import com.example.bookshelf.common.IoDispatcher
 import com.example.bookshelf.common.NetworkChecker
 import com.example.bookshelf.data.dto.ApiException
 import com.example.bookshelf.domain.entity.GetNewResponseEntity
 import com.example.bookshelf.domain.usecase.ResultUseCase
-import com.example.bookshelf.ui.Model.Book
-import com.example.bookshelf.ui.Model.toBookList
+import com.example.bookshelf.presentation.model.Book
+import com.example.bookshelf.presentation.model.toBookList
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableSharedFlow

@@ -1,4 +1,4 @@
-package com.example.bookshelf.ui.viewmodel
+package com.example.bookshelf.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

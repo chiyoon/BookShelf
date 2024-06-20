@@ -1,4 +1,4 @@
-package com.example.bookshelf
+package com.example.bookshelf.ui
 
 import MainScreen
 import android.os.Bundle

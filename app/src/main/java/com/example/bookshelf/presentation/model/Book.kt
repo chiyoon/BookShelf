@@ -1,4 +1,4 @@
-package com.example.bookshelf.ui.Model
+package com.example.bookshelf.presentation.model
 
 import com.example.bookshelf.domain.entity.GetNewResponseEntity
 
