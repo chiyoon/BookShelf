@@ -8,6 +8,6 @@ interface ItBookDataSource {
 
     fun getNew(): Flow<Result<GetNewResponseDTO>>
 
-    fun getSearch(query: String, page: Int): Flow<Result<GetSearchResponseDTO>>
+    suspend fun getSearch(query: String, page: Int): Result<GetSearchResponseDTO>
 
 }

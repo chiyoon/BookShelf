@@ -23,16 +23,12 @@ class ItBookDataSourceImpl @Inject constructor() : ItBookDataSource {
         }
     }
 
-    override fun getSearch(query: String, page: Int): Flow<Result<GetSearchResponseDTO>> {
-        return flow {
-            try {
-                val res = ItBookClient.itBookService.getSearch(query, page)
+    override suspend fun getSearch(query: String, page: Int): Result<GetSearchResponseDTO> =
+        try {
+            val res = ItBookClient.itBookService.getSearch(query, page)
 
-                emit(Result.success(res))
-            } catch(e: HttpException) {
-                emit(Result.failure(ApiException(e.code())))
-            }
+            Result.success(res)
+        } catch(e: HttpException) {
+            Result.failure(ApiException(e.code()))
         }
-    }
-
 }

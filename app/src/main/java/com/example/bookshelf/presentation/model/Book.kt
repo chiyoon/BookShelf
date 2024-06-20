@@ -26,7 +26,7 @@ private fun GetNewResponseEntity.Book.toBook() = Book(
 
 fun GetNewResponseEntity.toBookList() = this.books.map { it.toBook() }
 
-private fun GetSearchResponseEntity.Book.toBook() = Book(
+fun GetSearchResponseEntity.Book.toBook() = Book(
     this.title, this.subtitle, this.isbn13, this.price, this.image, this.url
 )
 

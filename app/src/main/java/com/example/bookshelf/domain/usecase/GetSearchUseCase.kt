@@ -1,5 +1,6 @@
 package com.example.bookshelf.domain.usecase
 
+import androidx.paging.PagingData
 import com.example.bookshelf.domain.entity.GetSearchRequestEntity
 import com.example.bookshelf.domain.entity.GetSearchResponseEntity
 import com.example.bookshelf.domain.respository.ItBookRepository
@@ -8,8 +9,8 @@ import javax.inject.Inject
 
 class GetSearchUseCase @Inject constructor(
     private val itBookRepository: ItBookRepository
-) : ResultUseCase<GetSearchRequestEntity, GetSearchResponseEntity> {
+) : PagingUseCase<GetSearchRequestEntity, GetSearchResponseEntity.Book> {
 
-    override suspend fun invoke(request: GetSearchRequestEntity): Flow<Result<GetSearchResponseEntity>> = itBookRepository.getSearch(request)
+    override suspend fun invoke(request: GetSearchRequestEntity): Flow<PagingData<GetSearchResponseEntity.Book>> = itBookRepository.getSearch(request)
 
 }
