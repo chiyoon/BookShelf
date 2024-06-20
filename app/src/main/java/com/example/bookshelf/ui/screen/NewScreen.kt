@@ -1,5 +1,6 @@
 package com.example.bookshelf.ui.screen
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -8,14 +9,18 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.bookshelf.R
 import com.example.bookshelf.ui.Model.Book
 import com.example.bookshelf.ui.component.BookCard
 import com.example.bookshelf.ui.component.TopBar
@@ -26,9 +31,22 @@ fun NewScreen(
     navController: NavHostController,
     viewModel: NewScreenViewModel = hiltViewModel()
 ) {
-    viewModel.getRes()
+    val context = LocalContext.current
 
     val list by viewModel.newBookList.collectAsState(initial = List(10) { Book.placeholder })
+    val isConnected by viewModel.isConnected.collectAsState(initial = true)
+
+    val toastString = stringResource(id = R.string.toast_not_connected)
+
+    LaunchedEffect(Unit) {
+        viewModel.getNew()
+    }
+
+    LaunchedEffect(isConnected) {
+        if (!isConnected) {
+            Toast.makeText(context, toastString, Toast.LENGTH_SHORT).show()
+        }
+    }
 
     Scaffold(
         topBar = { TopBar(content = "What's New?") }
