@@ -11,6 +11,9 @@ interface ItBookDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertItBook(book: ItBookEntity)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insetItBookList(itBookList: List<ItBookEntity>)
+
     @Query("select * from it_book")
     suspend fun getAllItBook(): List<ItBookEntity>
 

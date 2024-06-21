@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import javax.inject.Inject
 
-class ItBookDataSourceImpl @Inject constructor() : ItBookDataSource {
+class ItBookRemoteDataSourceImpl @Inject constructor() : ItBookDataSource.Remote {
 
     override fun getNew(): Flow<Result<GetNewResponseDTO>> {
         return flow {
@@ -20,6 +20,8 @@ class ItBookDataSourceImpl @Inject constructor() : ItBookDataSource {
                 emit(Result.success(res))
             } catch (e: HttpException) {
                 emit(Result.failure(ApiException(e.code())))
+            } catch (e: Exception) {
+                emit(Result.failure(e))
             }
         }
     }
@@ -32,6 +34,8 @@ class ItBookDataSourceImpl @Inject constructor() : ItBookDataSource {
                 emit(Result.success(res))
             } catch (e: HttpException) {
                 emit(Result.failure(ApiException(e.code())))
+            } catch (e: Exception) {
+                emit(Result.failure(e))
             }
         }
     }
@@ -43,5 +47,7 @@ class ItBookDataSourceImpl @Inject constructor() : ItBookDataSource {
             Result.success(res)
         } catch(e: HttpException) {
             Result.failure(ApiException(e.code()))
+        } catch (e: Exception) {
+            Result.failure(e)
         }
 }
