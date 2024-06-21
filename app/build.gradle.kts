@@ -83,12 +83,16 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
 
+    // Paging
     implementation(libs.androidx.paging.runtime)
     implementation(libs.androidx.paging.compose)
 
     // Rest API
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
+
+    // HTML Unescape
+    implementation(libs.unbescape)
 }
 
 kapt {

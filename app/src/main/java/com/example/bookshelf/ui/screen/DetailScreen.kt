@@ -27,8 +27,10 @@ import coil.request.ImageRequest
 import com.example.bookshelf.R
 import com.example.bookshelf.presentation.viewmodel.DetailViewModel
 import com.example.bookshelf.ui.component.BookDetailRow
+import com.example.bookshelf.ui.component.Rating
 import com.example.bookshelf.ui.component.TopBar
 import com.example.bookshelf.ui.theme.Typography
+import org.unbescape.html.HtmlEscape
 
 @Composable
 fun DetailScreen(
@@ -87,6 +89,7 @@ fun DetailScreen(
                 )
 
                 BookDetailRow(key = "Price", value = bookDetail.price)
+                Rating(rating = bookDetail.rating)
                 BookDetailRow(key = "Author", value = bookDetail.authors)
                 BookDetailRow(key = "Publisher", value = bookDetail.publisher)
                 BookDetailRow(key = "Published", value = bookDetail.year)
@@ -104,8 +107,10 @@ fun DetailScreen(
                 )
 
                 Text(
-                    text = bookDetail.desc,
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+                    text = HtmlEscape.unescapeHtml(bookDetail.desc),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
                     style = Typography.bodyLarge,
                     textAlign = TextAlign.Justify
                 )
@@ -117,5 +122,5 @@ fun DetailScreen(
 @Composable
 @Preview
 fun DetailScreenPreview() {
-    DetailScreen(isbn13 = "1234567890")
+    DetailScreen(isbn13 = "9781617292576")
 }
