@@ -1,6 +1,6 @@
 package com.example.bookshelf.domain.entity
 
-class GetSearchResponseEntity(
+data class GetSearchResponseEntity(
     val error: Int,
     val total: Int,
     val page: Int,

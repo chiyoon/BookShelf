@@ -37,6 +37,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.bookshelf.R
 import com.example.bookshelf.presentation.viewmodel.SearchViewModel
 import com.example.bookshelf.ui.component.BookRow
+import com.example.bookshelf.ui.component.FullScreenLoading
 import com.example.bookshelf.ui.component.TopBar
 import com.example.bookshelf.ui.theme.Typography
 
@@ -52,9 +53,16 @@ fun SearchScreen(
 
     val textState = rememberSaveable { mutableStateOf(query) }
 
+    val isLoading by viewModel.isLoading.collectAsState()
+
     Scaffold(
         topBar = { TopBar(content = "Search") }
     ) { innerPadding ->
+
+        if (isLoading) {
+            FullScreenLoading()
+        }
+
         Column(
             verticalArrangement = Arrangement.Top,
             modifier = Modifier.padding(innerPadding)

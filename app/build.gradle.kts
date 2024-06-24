@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
+    alias(libs.plugins.googlDevToolsKSP) apply false
 }
 
 android {
@@ -83,12 +84,21 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
 
+    // Paging
     implementation(libs.androidx.paging.runtime)
     implementation(libs.androidx.paging.compose)
 
     // Rest API
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
+
+    // HTML Unescape
+    implementation(libs.unbescape)
+
+    // Room
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    kapt(libs.androidx.room.compiler)
 }
 
 kapt {
