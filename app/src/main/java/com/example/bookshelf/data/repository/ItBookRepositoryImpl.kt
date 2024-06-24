@@ -11,6 +11,7 @@ import com.example.bookshelf.data.db.ItBookEntity
 import com.example.bookshelf.data.dto.ApiException
 import com.example.bookshelf.data.dto.GetBooksResponseDTO
 import com.example.bookshelf.data.dto.GetNewResponseDTO
+import com.example.bookshelf.data.dto.GetSearchResponseDTO
 import com.example.bookshelf.domain.entity.GetBooksRequestEntity
 import com.example.bookshelf.domain.entity.GetBooksResponseEntity
 import com.example.bookshelf.domain.entity.GetNewResponseEntity
@@ -72,7 +73,7 @@ class ItBookRepositoryImpl @Inject constructor(
                 pageSize = 10,
                 enablePlaceholders = false
             ),
-            pagingSourceFactory = { SearchPagingSource(request.query, itBookRemoteDataSource) }
+            pagingSourceFactory = { SearchPagingSource(request.query, itBookRemoteDataSource, itBookLocalDataSource) }
         ).flow
     }
 
@@ -96,7 +97,8 @@ class ItBookRepositoryImpl @Inject constructor(
 
 class SearchPagingSource(
     private val query: String,
-    private val dataSource: ItBookDataSource.Remote
+    private val remoteDatasource: ItBookDataSource.Remote,
+    private val localDatasource: ItBookDataSource.Local
 ) : PagingSource<Int, GetSearchResponseEntity.Book>() {
 
     override fun getRefreshKey(state: PagingState<Int, GetSearchResponseEntity.Book>): Int? {
@@ -107,10 +109,12 @@ class SearchPagingSource(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, GetSearchResponseEntity.Book> {
         val page = params.key ?: 1
-        val result = dataSource.getSearch(query, page)
+        val result = remoteDatasource.getSearch(query, page)
 
         try {
             val data = result.getOrThrow()
+
+            localDatasource.insertItBooks(data.books.toDBEntity())
 
             return LoadResult.Page(
                 data = data.books.map { it.toEntity() },
@@ -120,6 +124,12 @@ class SearchPagingSource(
         } catch (e: ApiException) {
             return LoadResult.Error(e)
         }
+    }
+
+    private fun List<GetSearchResponseDTO.Book>.toDBEntity() = this.map {
+        ItBookEntity(
+            it.isbn13, it.title, it.subtitle, it.image, it.url, it.price
+        )
     }
 
 }
