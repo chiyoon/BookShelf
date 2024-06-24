@@ -6,8 +6,10 @@ import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.bookshelf.data.datasource.ItBookDataSource
+import com.example.bookshelf.data.db.ItBookDetailEntity
 import com.example.bookshelf.data.db.ItBookEntity
 import com.example.bookshelf.data.dto.ApiException
+import com.example.bookshelf.data.dto.GetBooksResponseDTO
 import com.example.bookshelf.data.dto.GetNewResponseDTO
 import com.example.bookshelf.domain.entity.GetBooksRequestEntity
 import com.example.bookshelf.domain.entity.GetBooksResponseEntity
@@ -41,6 +43,15 @@ class ItBookRepositoryImpl @Inject constructor(
     override fun getBooks(requestEntity: GetBooksRequestEntity): Flow<Result<GetBooksResponseEntity>> {
         return flow {
             itBookRemoteDataSource.getBooks(requestEntity.isbn13).collect { dto ->
+                if (dto.isSuccess) {
+                    dto.getOrNull()?.let {
+                        val isNotSaved = itBookLocalDataSource.getItBookDetail(isbn13 = it.isbn13) == null
+
+                        if (isNotSaved) {
+                            itBookLocalDataSource.insertItBookDetail(it.toDBEntity())
+                        }
+                    }
+                }
                 emit(dto.mapCatching { it.toDTO() })
             }
         }
@@ -56,11 +67,15 @@ class ItBookRepositoryImpl @Inject constructor(
         ).flow
     }
 
-    fun List<GetNewResponseDTO.Book>.toDBEntity() = this.map {
+    private fun List<GetNewResponseDTO.Book>.toDBEntity() = this.map {
         ItBookEntity(
             it.isbn13, it.title, it.subtitle, it.image, it.url, it.price
         )
     }
+
+    private fun GetBooksResponseDTO.toDBEntity() = ItBookDetailEntity(
+        this.isbn13, this.isbn10, this.rating, this.year, this.authors, this.publisher, this.language, this.desc
+    )
 
 }
 

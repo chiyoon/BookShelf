@@ -8,10 +8,10 @@ import androidx.room.Query
 @Dao
 interface ItBookDAO {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertItBook(book: ItBookEntity)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insetItBookList(itBookList: List<ItBookEntity>)
 
     @Query("select * from it_book")

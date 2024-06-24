@@ -16,8 +16,7 @@ import androidx.room.PrimaryKey
     ]
 )
 data class ItBookDetailEntity(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val isbn13: String,
+    @PrimaryKey val isbn13: String,
     val isbn10: String,
     val rating: Int,
     val year: Int,
@@ -25,5 +24,5 @@ data class ItBookDetailEntity(
     val publisher: String,
     val language: String,
     val description: String,
-    val memo: String? = null
+    val memo: String = ""
 )

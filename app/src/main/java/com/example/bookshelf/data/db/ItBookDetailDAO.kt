@@ -8,7 +8,7 @@ import androidx.room.Query
 @Dao
 interface ItBookDetailDAO {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertBookDetail(detail: ItBookDetailEntity)
 
     @Query("SELECT * FROM it_book_detail WHERE isbn13 = :isbn13")
