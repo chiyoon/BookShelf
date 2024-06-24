@@ -17,7 +17,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
@@ -27,7 +26,7 @@ class SearchViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     networkChecker: NetworkChecker,
     @IoDispatcher coroutineDispatcher: CoroutineDispatcher
-) : ApiViewModel(networkChecker, coroutineDispatcher) {
+) : ApiLoadingViewModel(networkChecker, coroutineDispatcher) {
 
     private val _searchBookList = MutableStateFlow<PagingData<Book>>(PagingData.empty())
     val searchBookList = _searchBookList.asStateFlow()
@@ -49,10 +48,10 @@ class SearchViewModel @Inject constructor(
 
             getSearchUseCase(GetSearchRequestEntity(query, 1))
                 .cachedIn(viewModelScope)
-                .onStart { /* TODO : Loading Start */ }
-                .onCompletion { /* TODO : Loading End */ }
+                .onStart { _isLoading.emit(true) }
                 .collectLatest { pagingData ->
                     _searchBookList.emit(pagingData.map { it.toBook() })
+                    _isLoading.emit(false)
                 }
         }
 

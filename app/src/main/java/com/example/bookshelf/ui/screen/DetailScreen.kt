@@ -45,10 +45,11 @@ import com.example.bookshelf.R
 import com.example.bookshelf.presentation.viewmodel.DetailViewModel
 import com.example.bookshelf.ui.component.BookDetailRow
 import com.example.bookshelf.ui.component.BookDetailTextRow
+import com.example.bookshelf.ui.component.FullScreenLoading
 import com.example.bookshelf.ui.component.Rating
-import com.example.bookshelf.ui.component.TopBar
 import com.example.bookshelf.ui.component.SquareButton
 import com.example.bookshelf.ui.component.SquareButtonType
+import com.example.bookshelf.ui.component.TopBar
 import com.example.bookshelf.ui.theme.Typography
 import org.unbescape.html.HtmlEscape
 
@@ -82,6 +83,8 @@ fun DetailScreen(
 
     val memoState = rememberSaveable(memo) { mutableStateOf(memo) }
 
+    val isLoading by viewModel.isLoading.collectAsState()
+
     fun saveMemo() {
         bookDetail?.let {
             viewModel.updateMemo(it.isbn13, memoState.value)
@@ -93,6 +96,10 @@ fun DetailScreen(
     Scaffold(
         topBar = { TopBar(content = "Book detail") }
     ) { innerPadding ->
+        if (isLoading) {
+            FullScreenLoading()
+        }
+
         Column(
             modifier = Modifier
                 .padding(innerPadding)

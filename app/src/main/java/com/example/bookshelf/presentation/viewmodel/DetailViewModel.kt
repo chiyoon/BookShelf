@@ -27,7 +27,7 @@ class DetailViewModel @Inject constructor(
     private val getBooksUseCase: ResultUseCase<GetBooksRequestEntity, GetBooksResponseEntity>,
     private val updateBookUseCase: ResultUseCase<UpdateBookMemoRequestEntity, Unit>,
     @IoDispatcher private val coroutineDispatcher: CoroutineDispatcher
-) : ApiViewModel(networkChecker, coroutineDispatcher) {
+) : ApiLoadingViewModel(networkChecker, coroutineDispatcher) {
 
     private val _bookDetail = MutableSharedFlow<BookDetail>()
     val bookDetail = _bookDetail.asSharedFlow()
@@ -41,8 +41,8 @@ class DetailViewModel @Inject constructor(
     fun getBooks(isbn13: String) {
         suspend fun getRes() {
             getBooksUseCase(GetBooksRequestEntity(isbn13))
-                .onStart { /* TODO : Loading Start */ }
-                .onCompletion { /* TODO : Loading End */ }
+                .onStart { _isLoading.emit(true) }
+                .onCompletion { _isLoading.emit(false) }
                 .collect { res ->
                     res.onSuccess { entity ->
                         _bookDetail.emit(entity.toBookDetail())
@@ -61,8 +61,8 @@ class DetailViewModel @Inject constructor(
     fun updateMemo(isbn13: String, memo: String) {
         viewModelScope.launch(coroutineDispatcher) {
             updateBookUseCase(UpdateBookMemoRequestEntity(isbn13, memo))
-                .onStart { /* TODO : Loading Start */ }
-                .onCompletion { /* TODO : Loading End */ }
+                .onStart { _isLoading.emit(true) }
+                .onCompletion { _isLoading.emit(false) }
                 .collect { res ->
                     res.onSuccess {
                         _isSaved.emit(true)
