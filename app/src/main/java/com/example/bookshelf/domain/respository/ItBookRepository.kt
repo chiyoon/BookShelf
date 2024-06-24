@@ -6,6 +6,7 @@ import com.example.bookshelf.domain.entity.GetBooksResponseEntity
 import com.example.bookshelf.domain.entity.GetNewResponseEntity
 import com.example.bookshelf.domain.entity.GetSearchRequestEntity
 import com.example.bookshelf.domain.entity.GetSearchResponseEntity
+import com.example.bookshelf.domain.entity.UpdateBookMemoRequestEntity
 import kotlinx.coroutines.flow.Flow
 
 interface ItBookRepository {
@@ -15,5 +16,7 @@ interface ItBookRepository {
     fun getBooks(requestEntity: GetBooksRequestEntity): Flow<Result<GetBooksResponseEntity>>
 
     fun getSearch(request: GetSearchRequestEntity): Flow<PagingData<GetSearchResponseEntity.Book>>
+
+    fun updateBookMemo(request: UpdateBookMemoRequestEntity): Flow<Result<Unit>>
 
 }

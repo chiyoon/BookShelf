@@ -16,6 +16,7 @@ import com.example.bookshelf.domain.entity.GetBooksResponseEntity
 import com.example.bookshelf.domain.entity.GetNewResponseEntity
 import com.example.bookshelf.domain.entity.GetSearchRequestEntity
 import com.example.bookshelf.domain.entity.GetSearchResponseEntity
+import com.example.bookshelf.domain.entity.UpdateBookMemoRequestEntity
 import com.example.bookshelf.domain.respository.ItBookRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -43,16 +44,24 @@ class ItBookRepositoryImpl @Inject constructor(
     override fun getBooks(requestEntity: GetBooksRequestEntity): Flow<Result<GetBooksResponseEntity>> {
         return flow {
             itBookRemoteDataSource.getBooks(requestEntity.isbn13).collect { dto ->
+                var emitted = false
+
                 if (dto.isSuccess) {
                     dto.getOrNull()?.let {
-                        val isNotSaved = itBookLocalDataSource.getItBookDetail(isbn13 = it.isbn13) == null
+                        val localBookDetail = itBookLocalDataSource.getItBookDetail(isbn13 = it.isbn13)
 
-                        if (isNotSaved) {
+                        if (localBookDetail == null) {
                             itBookLocalDataSource.insertItBookDetail(it.toDBEntity())
+                        } else {
+                            emitted = true
+                            emit(dto.mapCatching { it.toDTO(localBookDetail.memo) })
                         }
                     }
                 }
-                emit(dto.mapCatching { it.toDTO() })
+
+                if (!emitted) {
+                    emit(dto.mapCatching { it.toDTO() })
+                }
             }
         }
     }
@@ -65,6 +74,12 @@ class ItBookRepositoryImpl @Inject constructor(
             ),
             pagingSourceFactory = { SearchPagingSource(request.query, itBookRemoteDataSource) }
         ).flow
+    }
+
+    override fun updateBookMemo(request: UpdateBookMemoRequestEntity): Flow<Result<Unit>> {
+        return flow {
+            emit(itBookLocalDataSource.updateBookMemo(request.isbn13, request.memo))
+        }
     }
 
     private fun List<GetNewResponseDTO.Book>.toDBEntity() = this.map {

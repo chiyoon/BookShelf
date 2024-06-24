@@ -14,4 +14,7 @@ interface ItBookDetailDAO {
     @Query("SELECT * FROM it_book_detail WHERE isbn13 = :isbn13")
     suspend fun getBookDetail(isbn13: String): ItBookDetailEntity?
 
+    @Query("UPDATE it_book_detail SET memo = :memo WHERE isbn13 = :isbn13")
+    suspend fun updateBookMemo(isbn13: String, memo: String): Int
+
 }

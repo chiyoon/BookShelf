@@ -2,6 +2,7 @@ package com.example.bookshelf.ui.screen
 
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -56,24 +57,36 @@ fun DetailScreen(
     isbn13: String,
     viewModel: DetailViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
+
     LaunchedEffect(Unit) {
         viewModel.getBooks(isbn13)
+
+        // TODO: Collect 가 아닌 다른 방법으로 구현 가능한가?
+        viewModel.isSaved.collect {
+            if (it == true) {
+                Toast.makeText(context, "메모가 저장되었습니다", Toast.LENGTH_SHORT).show()
+            } else if (it == false) {
+                Toast.makeText(context, "메모가 저장에 실패하였습니다", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     val keyboard = LocalSoftwareKeyboardController.current
-
-    val context = LocalContext.current
 
     val bookDetail by viewModel.bookDetail.collectAsState(initial = null)
 
     val scrollState = rememberScrollState()
 
-    val memo by viewModel.memo.collectAsState(initial = "")
+    val memo by viewModel.memo.collectAsState()
 
-    val memoState = rememberSaveable { mutableStateOf(memo) }
+    val memoState = rememberSaveable(memo) { mutableStateOf(memo) }
 
     fun saveMemo() {
-        // TODO: Save Memo
+        bookDetail?.let {
+            viewModel.updateMemo(it.isbn13, memoState.value)
+        }
+
         keyboard?.hide()
     }
 

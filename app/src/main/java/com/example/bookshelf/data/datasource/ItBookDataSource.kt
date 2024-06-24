@@ -27,6 +27,8 @@ interface ItBookDataSource {
 
         suspend fun insertItBookDetail(itBookDetail: ItBookDetailEntity)
 
+        suspend fun updateBookMemo(isbn13: String, memo: String): Result<Unit>
+
     }
 
 }

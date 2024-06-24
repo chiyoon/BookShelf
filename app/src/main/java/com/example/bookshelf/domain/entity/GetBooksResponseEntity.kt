@@ -16,5 +16,6 @@ data class GetBooksResponseEntity(
     val price: String,
     val image: String,
     val url: String,
-    val pdf: Map<String, String>?
+    val pdf: Map<String, String>?,
+    val memo: String
 )
