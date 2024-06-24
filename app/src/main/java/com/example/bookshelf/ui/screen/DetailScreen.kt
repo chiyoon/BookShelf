@@ -1,9 +1,15 @@
 package com.example.bookshelf.ui.screen
 
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -21,14 +27,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.bookshelf.R
 import com.example.bookshelf.presentation.viewmodel.DetailViewModel
 import com.example.bookshelf.ui.component.BookDetailRow
+import com.example.bookshelf.ui.component.BookDetailTextRow
 import com.example.bookshelf.ui.component.Rating
 import com.example.bookshelf.ui.component.TopBar
+import com.example.bookshelf.ui.component.WebButton
+import com.example.bookshelf.ui.component.WebButtonType
 import com.example.bookshelf.ui.theme.Typography
 import org.unbescape.html.HtmlEscape
 
@@ -88,15 +98,42 @@ fun DetailScreen(
                     error = painterResource(id = R.drawable.ic_image_placeholder)
                 )
 
-                BookDetailRow(key = "Price", value = bookDetail.price)
+                BookDetailTextRow(key = "Price", value = bookDetail.price)
                 Rating(rating = bookDetail.rating)
-                BookDetailRow(key = "Author", value = bookDetail.authors)
-                BookDetailRow(key = "Publisher", value = bookDetail.publisher)
-                BookDetailRow(key = "Published", value = bookDetail.year)
-                BookDetailRow(key = "Pages", value = bookDetail.pages)
-                BookDetailRow(key = "Language", value = bookDetail.language)
-                BookDetailRow(key = "ISBN-10", value = bookDetail.isbn10)
-                BookDetailRow(key = "ISBN-13", value = bookDetail.isbn13)
+                BookDetailTextRow(key = "Author", value = bookDetail.authors)
+                BookDetailTextRow(key = "Publisher", value = bookDetail.publisher)
+                BookDetailTextRow(key = "Published", value = bookDetail.year)
+                BookDetailTextRow(key = "Pages", value = bookDetail.pages)
+                BookDetailTextRow(key = "Language", value = bookDetail.language)
+                BookDetailTextRow(key = "ISBN-10", value = bookDetail.isbn10)
+                BookDetailTextRow(key = "ISBN-13", value = bookDetail.isbn13)
+                BookDetailRow(key = "Web Link") {
+                    WebButton(WebButtonType.Web) {
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(bookDetail.url))
+
+                        ContextCompat.startActivity(context, intent, null)
+                    }
+                }
+
+                bookDetail.pdf?.let {
+                    BookDetailRow(key = "PDF Link") {
+                        it.forEach { (key, value) ->
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Start,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                WebButton(type = WebButtonType.Document) {
+                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(value))
+
+                                    ContextCompat.startActivity(context, intent, null)
+                                }
+                                Spacer(modifier = Modifier.width(16.dp))
+                                Text(text = key, style = Typography.bodyLarge)
+                            }
+                        }
+                    }
+                }
 
                 Text(
                     text = "Description",

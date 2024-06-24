@@ -1,5 +1,7 @@
 package com.example.bookshelf.ui.component
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.unit.dp
@@ -14,7 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.bookshelf.ui.theme.Typography
 
 @Composable
-fun BookDetailRow(key: String, value: String) {
+fun BookDetailRow(key: String, content: @Composable ColumnScope.() -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -23,17 +25,24 @@ fun BookDetailRow(key: String, value: String) {
     ) {
         Text(text = key, modifier = Modifier.weight(1f), style = Typography.titleMedium)
         Spacer(modifier = Modifier.width(16.dp))
-        Text(text = value, modifier = Modifier.weight(1f), style = Typography.bodyLarge)
+        Column(modifier = Modifier.weight(1f), content = content, horizontalAlignment = Alignment.CenterHorizontally)
     }
 }
 
 @Composable
-fun BookDetailRow(key: String, value: Int) {
-    BookDetailRow(key = key, value = value.toString())
+fun BookDetailTextRow(key: String, value: String) {
+    BookDetailRow(key = key) {
+        Text(text = value, modifier = Modifier.fillMaxWidth(), style = Typography.bodyLarge)
+    }
+}
+
+@Composable
+fun BookDetailTextRow(key: String, value: Int) {
+    BookDetailTextRow(key = key, value = value.toString())
 }
 
 @Composable
 @Preview
-fun BookDetailRowPreview() {
-    BookDetailRow("Hello", "World!")
+fun BookDetailTextRowPreview() {
+    BookDetailTextRow("Hello", "World!")
 }
