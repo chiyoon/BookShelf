@@ -1,6 +1,7 @@
 package com.example.bookshelf.ui.screen
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,6 +26,7 @@ import com.example.bookshelf.presentation.model.Book
 import com.example.bookshelf.ui.component.BookCard
 import com.example.bookshelf.ui.component.TopBar
 import com.example.bookshelf.presentation.viewmodel.NewScreenViewModel
+import com.example.bookshelf.ui.findActivity
 
 @Composable
 fun NewScreen(
@@ -36,7 +38,18 @@ fun NewScreen(
     val list by viewModel.newBookList.collectAsState(initial = List(10) { Book.placeholder })
     val isConnected by viewModel.isConnected.collectAsState(initial = true)
 
+    val isFinish by viewModel.isFinish.collectAsState()
+
+    if (isFinish) {
+        context.findActivity().finishAffinity()
+    }
+
     val toastString = stringResource(id = R.string.toast_not_connected)
+
+    BackHandler {
+        Toast.makeText(context, "뒤로가기를 한번 더 누르면 종료됩니다", Toast.LENGTH_SHORT).show()
+        viewModel.pressBack()
+    }
 
     LaunchedEffect(Unit) {
         viewModel.getNew()
