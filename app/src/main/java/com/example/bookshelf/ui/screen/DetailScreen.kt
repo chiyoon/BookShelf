@@ -12,18 +12,27 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -37,8 +46,8 @@ import com.example.bookshelf.ui.component.BookDetailRow
 import com.example.bookshelf.ui.component.BookDetailTextRow
 import com.example.bookshelf.ui.component.Rating
 import com.example.bookshelf.ui.component.TopBar
-import com.example.bookshelf.ui.component.WebButton
-import com.example.bookshelf.ui.component.WebButtonType
+import com.example.bookshelf.ui.component.SquareButton
+import com.example.bookshelf.ui.component.SquareButtonType
 import com.example.bookshelf.ui.theme.Typography
 import org.unbescape.html.HtmlEscape
 
@@ -51,11 +60,22 @@ fun DetailScreen(
         viewModel.getBooks(isbn13)
     }
 
+    val keyboard = LocalSoftwareKeyboardController.current
+
     val context = LocalContext.current
 
     val bookDetail by viewModel.bookDetail.collectAsState(initial = null)
 
     val scrollState = rememberScrollState()
+
+    val memo by viewModel.memo.collectAsState(initial = "")
+
+    val memoState = rememberSaveable { mutableStateOf(memo) }
+
+    fun saveMemo() {
+        // TODO: Save Memo
+        keyboard?.hide()
+    }
 
     Scaffold(
         topBar = { TopBar(content = "Book detail") }
@@ -108,7 +128,7 @@ fun DetailScreen(
                 BookDetailTextRow(key = "ISBN-10", value = bookDetail.isbn10)
                 BookDetailTextRow(key = "ISBN-13", value = bookDetail.isbn13)
                 BookDetailRow(key = "Web Link") {
-                    WebButton(WebButtonType.Web) {
+                    SquareButton(SquareButtonType.Web) {
                         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(bookDetail.url))
 
                         ContextCompat.startActivity(context, intent, null)
@@ -123,7 +143,7 @@ fun DetailScreen(
                                 horizontalArrangement = Arrangement.Start,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                WebButton(type = WebButtonType.Document) {
+                                SquareButton(type = SquareButtonType.Document) {
                                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(value))
 
                                     ContextCompat.startActivity(context, intent, null)
@@ -136,7 +156,7 @@ fun DetailScreen(
                 }
 
                 Text(
-                    text = "Description",
+                    text = "· Description",
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 12.dp),
@@ -151,6 +171,59 @@ fun DetailScreen(
                     style = Typography.bodyLarge,
                     textAlign = TextAlign.Justify
                 )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "· Memo",
+                        style = Typography.titleMedium
+                    )
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Save",
+                            style = Typography.bodyLarge
+                        )
+
+                        Spacer(
+                            modifier = Modifier.width(8.dp)
+                        )
+
+                        SquareButton(type = SquareButtonType.Save) {
+                            saveMemo()
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                TextField(
+                    value = memoState.value,
+                    onValueChange = { memoState.value = it },
+                    textStyle = Typography.bodyLarge,
+                    singleLine = false,
+                    colors = TextFieldDefaults.textFieldColors(
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedLabelColor = Color.Transparent,
+                        cursorColor = Color.Black,
+                        textColor = Color.Black,
+                    ),
+                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(onDone = {
+                        saveMemo()
+                    }),
+                    shape = RoundedCornerShape(8.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
             }
         }
     }

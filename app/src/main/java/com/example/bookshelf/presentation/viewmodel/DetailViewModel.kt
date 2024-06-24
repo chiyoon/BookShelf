@@ -26,6 +26,9 @@ class DetailViewModel @Inject constructor(
     private val _bookDetail = MutableSharedFlow<BookDetail>()
     val bookDetail = _bookDetail.asSharedFlow()
 
+    private val _memo = MutableSharedFlow<String>()
+    val memo = _memo.asSharedFlow()
+
     fun getBooks(isbn13: String) {
         suspend fun getRes() {
             getBooksUseCase(GetBooksRequestEntity(isbn13))

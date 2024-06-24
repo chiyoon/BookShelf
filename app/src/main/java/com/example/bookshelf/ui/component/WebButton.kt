@@ -18,10 +18,11 @@ import androidx.compose.ui.unit.dp
 import com.example.bookshelf.R
 
 @Composable
-fun WebButton(type: WebButtonType, onClick: () -> Unit) {
+fun SquareButton(type: SquareButtonType, onClick: () -> Unit) {
     val icon = when(type) {
-        WebButtonType.Web -> R.drawable.ic_globe
-        WebButtonType.Document -> R.drawable.ic_file
+        SquareButtonType.Web -> R.drawable.ic_globe
+        SquareButtonType.Document -> R.drawable.ic_file
+        SquareButtonType.Save -> R.drawable.ic_save
     }
 
     Button(
@@ -46,6 +47,6 @@ fun WebButton(type: WebButtonType, onClick: () -> Unit) {
     }
 }
 
-enum class WebButtonType {
-    Web, Document
+enum class SquareButtonType {
+    Web, Document, Save
 }
