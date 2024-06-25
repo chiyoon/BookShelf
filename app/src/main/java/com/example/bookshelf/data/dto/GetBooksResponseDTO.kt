@@ -21,7 +21,7 @@ data class GetBooksResponseDTO(
     val pdf: Map<String, String>?
 ) {
 
-    fun toDTO(memo: String = "") = GetBooksResponseEntity(
+    fun toEntity(memo: String = "") = GetBooksResponseEntity(
         error, title, subtitle, authors, publisher, language, isbn10, isbn13, pages, year, rating, desc, price, image, url, pdf, memo
     )
 

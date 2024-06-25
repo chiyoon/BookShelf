@@ -23,11 +23,15 @@ interface ItBookDataSource {
 
         suspend fun insertItBooks(itBookEntityList: List<ItBookEntity>)
 
+        suspend fun getItBook(isbn13: String): ItBookEntity?
+
         suspend fun getItBookDetail(isbn13: String): ItBookDetailEntity?
 
         suspend fun insertItBookDetail(itBookDetail: ItBookDetailEntity)
 
         suspend fun updateBookMemo(isbn13: String, memo: String): Result<Unit>
+
+        suspend fun searchItBook(query: String, page: Int): Result<List<ItBookEntity>>
 
     }
 

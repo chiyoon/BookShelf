@@ -29,4 +29,16 @@ abstract class ApiViewModel(
         }
     }
 
+    fun cachedApiWithCheckNetwork(apiCall: KSuspendFunction0<Unit>) {
+        viewModelScope.launch(coroutineDispatcher) {
+            if (networkChecker.isConnected()) {
+                _isConnected.emit(true)
+            } else {
+                _isConnected.emit(false)
+            }
+
+            apiCall.invoke()
+        }
+    }
+
 }

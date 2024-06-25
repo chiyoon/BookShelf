@@ -35,8 +35,12 @@ class DetailViewModel @Inject constructor(
     private val _memo = MutableStateFlow("")
     val memo = _memo.asStateFlow()
 
+    // TODO: Toast 등의 ui 작업을 위한 state 는 어떻게 저장되면 좋을지 학습 필요
     private val _isSaved = MutableSharedFlow<Boolean?>()
     val isSaved = _isSaved.asSharedFlow()
+
+    private val _isNoCached = MutableStateFlow(false)
+    val isNoCached = _isNoCached.asStateFlow()
 
     fun getBooks(isbn13: String) {
         suspend fun getRes() {
@@ -50,12 +54,14 @@ class DetailViewModel @Inject constructor(
                     }.onFailure {
                         val errorCode = (it as ApiException).code
 
-                        // TODO : Error
+                        if (errorCode == -1) {
+                            _isNoCached.emit(true)
+                        }
                     }
                 }
         }
 
-        apiWithCheckNetwork(::getRes)
+        cachedApiWithCheckNetwork(::getRes)
     }
 
     fun updateMemo(isbn13: String, memo: String) {

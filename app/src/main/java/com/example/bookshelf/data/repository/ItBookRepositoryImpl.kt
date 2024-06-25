@@ -44,36 +44,48 @@ class ItBookRepositoryImpl @Inject constructor(
 
     override fun getBooks(requestEntity: GetBooksRequestEntity): Flow<Result<GetBooksResponseEntity>> {
         return flow {
+            // TODO: Local 과 Remote 의 데이터가 합쳐지는 패턴에서는 어떻게 작업하면 좋을까?
+            val localBook = itBookLocalDataSource.getItBook(isbn13 = requestEntity.isbn13)
+            val localBookDetail =
+                itBookLocalDataSource.getItBookDetail(isbn13 = requestEntity.isbn13)
+
             itBookRemoteDataSource.getBooks(requestEntity.isbn13).collect { dto ->
-                var emitted = false
+                try {
+                    val remoteData = dto.getOrThrow()
+                    val memo = localBookDetail?.memo ?: ""
 
-                if (dto.isSuccess) {
-                    dto.getOrNull()?.let {
-                        val localBookDetail = itBookLocalDataSource.getItBookDetail(isbn13 = it.isbn13)
-
-                        if (localBookDetail == null) {
-                            itBookLocalDataSource.insertItBookDetail(it.toDBEntity())
-                        } else {
-                            emitted = true
-                            emit(dto.mapCatching { it.toDTO(localBookDetail.memo) })
-                        }
+                    if (localBookDetail == null) {
+                        itBookLocalDataSource.insertItBookDetail(remoteData.toDBEntity())
                     }
-                }
 
-                if (!emitted) {
-                    emit(dto.mapCatching { it.toDTO() })
+                    emit(dto.mapCatching { it.toEntity(memo) })
+                } catch (e: ApiException) {
+                    emit(Result.failure(ApiException(-1)))
+                } catch (e: Exception) {
+                    if (localBook == null || localBookDetail == null) {
+                        emit(Result.failure(ApiException(-1)))
+                    } else {
+                        emit(Result.success(cacheToEntity(localBook, localBookDetail)))
+                    }
                 }
             }
         }
     }
 
+    // TODO: Paging Data 에 Result 객체를 전달하여, 중간 데이터에서 오류가 난 경우 Job 을 중단하는 등의 에러 처리를 어떻게 구현하면 좋을지 고민
     override fun getSearch(request: GetSearchRequestEntity): Flow<PagingData<GetSearchResponseEntity.Book>> {
         return Pager(
             config = PagingConfig(
                 pageSize = 10,
                 enablePlaceholders = false
             ),
-            pagingSourceFactory = { SearchPagingSource(request.query, itBookRemoteDataSource, itBookLocalDataSource) }
+            pagingSourceFactory = {
+                SearchPagingSource(
+                    request.query,
+                    itBookRemoteDataSource,
+                    itBookLocalDataSource
+                )
+            }
         ).flow
     }
 
@@ -83,6 +95,7 @@ class ItBookRepositoryImpl @Inject constructor(
         }
     }
 
+    // TODO: Mapper 를 Class 형태로 빼서 주입받아서 사용하는게 좋을까?
     private fun List<GetNewResponseDTO.Book>.toDBEntity() = this.map {
         ItBookEntity(
             it.isbn13, it.title, it.subtitle, it.image, it.url, it.price
@@ -90,8 +103,38 @@ class ItBookRepositoryImpl @Inject constructor(
     }
 
     private fun GetBooksResponseDTO.toDBEntity() = ItBookDetailEntity(
-        this.isbn13, this.isbn10, this.rating, this.year, this.authors, this.publisher, this.language, this.desc
+        this.isbn13,
+        this.isbn10,
+        this.rating,
+        this.pages,
+        this.year,
+        this.authors,
+        this.publisher,
+        this.language,
+        this.desc,
+        this.pdf
     )
+
+    private fun cacheToEntity(localBook: ItBookEntity, localBookDetail: ItBookDetailEntity) =
+        GetBooksResponseEntity(
+            0,
+            localBook.title,
+            localBook.subTitle,
+            localBookDetail.author,
+            localBookDetail.publisher,
+            localBookDetail.language,
+            localBookDetail.isbn10,
+            localBookDetail.isbn13,
+            localBookDetail.pages,
+            localBookDetail.year,
+            localBookDetail.rating,
+            localBookDetail.description,
+            localBook.price,
+            localBook.imageUrl,
+            localBook.url,
+            localBookDetail.pdf,
+            localBookDetail.memo
+        )
 
 }
 
@@ -123,12 +166,29 @@ class SearchPagingSource(
             )
         } catch (e: ApiException) {
             return LoadResult.Error(e)
+        } catch (e: Exception) {
+            // TODO: 좀 더 예쁘게 캐싱된 결과를 가져올 방법은?
+            // 현재는 네트워크 오류시 local 에서 페이징을 요청하는 방식으로 구현했는데, 이러면 중간에 네트워크 상태가 복원되는 경우 로컬 데이터와 리모트 데이터가 섞임
+            // 해결 방법은 좀 더 고민이 필요할 듯
+            val data = localDatasource.searchItBook(query, page).getOrNull() ?: emptyList()
+
+            return LoadResult.Page(
+                data = data.toEntity(),
+                prevKey = if (page == 1) null else page - 1,
+                nextKey = if (data.isEmpty()) null else page + 1
+            )
         }
     }
 
     private fun List<GetSearchResponseDTO.Book>.toDBEntity() = this.map {
         ItBookEntity(
             it.isbn13, it.title, it.subtitle, it.image, it.url, it.price
+        )
+    }
+
+    private fun List<ItBookEntity>.toEntity() = this.map {
+        GetSearchResponseEntity.Book(
+            it.title, it.subTitle, it.isbn13, it.price, it.imageUrl, it.url
         )
     }
 
