@@ -44,6 +44,7 @@ class ItBookRepositoryImpl @Inject constructor(
 
     override fun getBooks(requestEntity: GetBooksRequestEntity): Flow<Result<GetBooksResponseEntity>> {
         return flow {
+            // TODO: Local 과 Remote 의 데이터가 합쳐지는 패턴에서는 어떻게 작업하면 좋을까?
             val localBook = itBookLocalDataSource.getItBook(isbn13 = requestEntity.isbn13)
             val localBookDetail =
                 itBookLocalDataSource.getItBookDetail(isbn13 = requestEntity.isbn13)
@@ -71,6 +72,7 @@ class ItBookRepositoryImpl @Inject constructor(
         }
     }
 
+    // TODO: Paging Data 에 Result 객체를 전달하여, 중간 데이터에서 오류가 난 경우 Job 을 중단하는 등의 에러 처리를 어떻게 구현하면 좋을지 고민
     override fun getSearch(request: GetSearchRequestEntity): Flow<PagingData<GetSearchResponseEntity.Book>> {
         return Pager(
             config = PagingConfig(
