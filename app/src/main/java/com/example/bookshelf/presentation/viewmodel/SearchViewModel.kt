@@ -25,7 +25,7 @@ class SearchViewModel @Inject constructor(
     private val getSearchUseCase: PagingUseCase<GetSearchRequestEntity, GetSearchResponseEntity.Book>,
     savedStateHandle: SavedStateHandle,
     networkChecker: NetworkChecker,
-    @IoDispatcher coroutineDispatcher: CoroutineDispatcher
+    @IoDispatcher private val coroutineDispatcher: CoroutineDispatcher
 ) : ApiLoadingViewModel(networkChecker, coroutineDispatcher) {
 
     private val _searchBookList = MutableStateFlow<PagingData<Book>>(PagingData.empty())
@@ -55,7 +55,7 @@ class SearchViewModel @Inject constructor(
                 }
         }
 
-        apiWithCheckNetwork(::getRes)
+        cachedApiWithCheckNetwork(::getRes)
     }
 
 }

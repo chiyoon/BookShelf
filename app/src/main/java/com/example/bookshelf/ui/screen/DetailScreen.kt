@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -63,7 +64,7 @@ fun DetailScreen(
     LaunchedEffect(Unit) {
         viewModel.getBooks(isbn13)
 
-        // TODO: Collect 가 아닌 다른 방법으로 구현 가능한가?
+        // Question: Collect 가 아닌 다른 방법으로 구현 가능한가?
         viewModel.isSaved.collect {
             if (it == true) {
                 Toast.makeText(context, "메모가 저장되었습니다", Toast.LENGTH_SHORT).show()
@@ -84,6 +85,12 @@ fun DetailScreen(
     val memoState = rememberSaveable(memo) { mutableStateOf(memo) }
 
     val isLoading by viewModel.isLoading.collectAsState()
+
+    val isNoCached by viewModel.isNoCached.collectAsState()
+
+    if (isNoCached) {
+        Toast.makeText(context, stringResource(id = R.string.toast_not_connected), Toast.LENGTH_SHORT).show()
+    }
 
     fun saveMemo() {
         bookDetail?.let {

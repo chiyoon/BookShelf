@@ -14,7 +14,10 @@ interface ItBookDAO {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insetItBookList(itBookList: List<ItBookEntity>)
 
-    @Query("select * from it_book")
-    suspend fun getAllItBook(): List<ItBookEntity>
+    @Query("select * from it_book where isbn13 = :isbn13 limit 1")
+    suspend fun getItBook(isbn13: String): ItBookEntity?
+
+    @Query("select * from it_book where isbn13 like(:query) or title like(:query) or subTitle like(:query) limit 10 offset :offset")
+    suspend fun searchItBook(query: String, offset: Int): List<ItBookEntity>
 
 }

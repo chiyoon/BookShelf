@@ -19,10 +19,12 @@ data class ItBookDetailEntity(
     @PrimaryKey val isbn13: String,
     val isbn10: String,
     val rating: Int,
+    val pages: Int,
     val year: Int,
     val author: String,
     val publisher: String,
     val language: String,
     val description: String,
+    val pdf: Map<String, String>?,
     val memo: String = ""
 )

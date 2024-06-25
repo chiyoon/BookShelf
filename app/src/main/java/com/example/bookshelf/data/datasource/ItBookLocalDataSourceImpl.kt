@@ -16,6 +16,8 @@ class ItBookLocalDataSourceImpl @Inject constructor(
         itBookDAO.insetItBookList(itBookEntityList)
     }
 
+    override suspend fun getItBook(isbn13: String): ItBookEntity? = itBookDAO.getItBook(isbn13)
+
     override suspend fun getItBookDetail(isbn13: String): ItBookDetailEntity? = itBookDetailDAO.getBookDetail(isbn13)
 
     override suspend fun insertItBookDetail(itBookDetail: ItBookDetailEntity) {
@@ -33,4 +35,9 @@ class ItBookLocalDataSourceImpl @Inject constructor(
         }
     }
 
+    override suspend fun searchItBook(query: String, page: Int): Result<List<ItBookEntity>> {
+        val data = itBookDAO.searchItBook("%$query%", 10 * (page - 1))
+
+        return Result.success(data)
+    }
 }
