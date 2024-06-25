@@ -45,9 +45,10 @@ fun NewScreen(
     }
 
     val toastString = stringResource(id = R.string.toast_not_connected)
+    val backToastString = stringResource(id = R.string.toast_back_close)
 
     BackHandler {
-        Toast.makeText(context, "뒤로가기를 한번 더 누르면 종료됩니다", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, backToastString, Toast.LENGTH_SHORT).show()
         viewModel.pressBack()
     }
 
